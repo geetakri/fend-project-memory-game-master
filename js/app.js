@@ -51,6 +51,9 @@
   let interval, second, minute, hour;
   const moves = document.querySelector(".moves");
   const timer = document.querySelector(".timer");
+  const congPopUpModal = document.querySelector("#congPopup-modal");
+  const modalMessage = document.querySelector("#modal-message");
+
 
   document.body.onload = startGame();
  function startGame(){
@@ -80,160 +83,166 @@
     // var timer = document.querySelector(".timer");
      timer.innerHTML = "0 mins 0 secs";
      clearInterval(interval);
-  }
+  //}
 
   //adds required number of list itmes for stars
-  function addStars(noOfStars){
-      let strHTML ='';
-      for(let i=1; i<=noOfStars; i++)
-      {
-          strHTML += `<li><i class="fa fa-star"></i></li>`;
-      }
-      stars.innerHTML = strHTML;
-    }
-
-  //generates list items for the deck
-  function generateCardItems(card){
-       return `<li class ="card"><i class = "fa ${card}"></i></li>`;
-
-  }
-
-
-  let openedCards = [];
-  totalCards = document.querySelectorAll('.card');
-  let matchedCardPair=0;
-
-
-  totalCards.forEach(function(card) {
-        card.addEventListener('click', function(evt) {
-
-              //pushes open card to the opendedCards Array
-              addToOpenedCards(card);
-
-              //adds class show,open to the card class
-              showSymbol(card);
-
-              //if the there are two opened cards
-              if(openedCards.length === 2) {
-                  //increments the move
-                  incrementMoves();
-                  let firstOpenedCardClassName = openedCards[0].firstElementChild.className;
-                  let secondOpenedCardClassName = openedCards[1].firstElementChild.className;
-
-                      //If the two cards match
-                      if(firstOpenedCardClassName === secondOpenedCardClassName){
-
-                          //adds class match to them and increments the matched card pair counter
-                          lockMatchedCards();
-                          matchedCardPair++;
-                          gameOver();
-                      }
-                      //If they dont match
-                      else {
-                        hideUnmatchedCards();
-                    }
-              }
-        });
-  });
-
-
- //adds the clicked card to the list of "open" Cards
- function addToOpenedCards(card){
-      openedCards.push(card);
- }
-
- //displays the clicked card's Symbol
- function showSymbol(card){
-       card.classList.add('open', 'show');
-  }
-
-  //increments the movecounter and starts the timer when the movecounter is one
-  function incrementMoves(){
-      movesCounter++;
-      moves.innerHTML = movesCounter;
-      //start the timer when the players clicks the first time
-      if(movesCounter == 1){
-          second = 0;
-          minute = 0;
-          hour = 0;
-          startTimer();
-      }
-
-      if (moves.innerText > 25) {
-            //adds one star if the moves are greator than 25
-            addStars(1);
+    function addStars(noOfStars){
+        let strHTML ='';
+        for(let i=1; i<=noOfStars; i++)
+        {
+            strHTML += `<li><i class="fa fa-star"></i></li>`;
         }
-      else if (moves.innerText > 15 && moves.innertext <=25){
-          //adds two star if the moves are greator than 15 and equals to and smaller than 25
-          addStars(2);
+        stars.innerHTML = strHTML;
       }
-      else {
-          addStars(3);
-      }
-  }
 
-  //starts the timer
-  function startTimer(){
-      interval = setInterval(function(){
-          timer.innerHTML = minute+"mins "+second+"secs";
-          second++;
-          if(second == 60){
-              minute++;
-              second=0;
-          }
-          if(minute == 60){
-              hour++;
-              minute = 0;
-          }
-      },1000);
-  }
+    //generates list items for the deck
+    function generateCardItems(card){
+         return `<li class ="card"><i class = "fa ${card}"></i></li>`;
 
-  //adds match class to the matched cards and removes the class open and show and resets the openedCards Array
-  function lockMatchedCards(){
-      openedCards.forEach(function(card) {
-          card.classList.remove('open', 'show');
-          card.classList.add('match');
-      });
-      openedCards = [];
-  }
-
-  //removes the class open and show from unmatched cards after a certain delay and resets the openedCards Array
-  function hideUnmatchedCards(){
-      //If the two cards doesnot match , both the cards disappears
-      setTimeout(function() {
-          openedCards.forEach(function(card) {
-            card.classList.remove('open', 'show');
-          });
-          openedCards = [];
-      },200);
-  }
-
-  const congPopUpModal = document.querySelector("#congPopup-modal");
-  const modalMessage = document.querySelector("#modal-message");
-  const playAgain = document.querySelector(".play-again");
-  const restart = document.querySelector(".restart");
-
-  //ends the game and displays the congratulations modal popup
-  function gameOver(){
-      if (matchedCardPair === 8){
-            //stop the timer
-            clearInterval(interval);
-           totalTime = timer.innerHTML;
-
-           noOfStars=stars.children.length;
-           //Pops up congratulations Modal and prints the message.
-           congPopUpModal.style.display="block";
-           modalMessage.textContent= "You have made "+movesCounter+" moves in "+totalTime+", and Your rating is "+noOfStars+" star(s)!";
     }
 
-  }
 
+    let openedCards = [];
+    totalCards = document.querySelectorAll('.card');
+    let matchedCardPair=0;
+
+
+    totalCards.forEach(function(card) {
+          card.addEventListener('click', function(evt) {
+          
+
+            if(!card.classList.contains('match') &&
+                !card.classList.contains('open') && !card.classList.contains('show')){
+                //pushes open card to the opendedCards Array
+                addToOpenedCards(card);
+
+                //adds class show,open to the card class
+                showSymbol(card);
+
+                //if the there are two opened cards
+                if(openedCards.length === 2) {
+                    //increments the move
+                    incrementMoves();
+                    let firstOpenedCardClassName = openedCards[0].firstElementChild.className;
+                    let secondOpenedCardClassName = openedCards[1].firstElementChild.className;
+
+                        //If the two cards match
+                        if(firstOpenedCardClassName === secondOpenedCardClassName){
+
+                            //adds class match to them and increments the matched card pair counter
+                            lockMatchedCards();
+                            matchedCardPair++;
+                            gameOver();
+                        }
+                        //If they dont match
+                        else {
+                          hideUnmatchedCards();
+                      }
+                }
+              }
+
+          });
+    });
+
+
+   //adds the clicked card to the list of "open" Cards
+   function addToOpenedCards(card){
+        openedCards.push(card);
+   }
+
+   //displays the clicked card's Symbol
+   function showSymbol(card){
+         card.classList.add('open', 'show');
+    }
+
+    //increments the movecounter and starts the timer when the movecounter is one
+    function incrementMoves(){
+        movesCounter++;
+        moves.innerHTML = movesCounter;
+        //start the timer when the players clicks the first time
+        if(movesCounter == 1){
+            second = 0;
+            minute = 0;
+            hour = 0;
+            startTimer();
+        }
+
+        if (moves.innerHTML > 25) {
+              //adds one star if the moves are greator than 25
+              addStars(1);
+          }
+        else if (moves.innerHTML > 15 && moves.innerHTML <=25){
+            //adds two star if the moves are greator than 15 and equals to and smaller than 25
+            addStars(2);
+        }
+        else {
+            addStars(3);
+        }
+    }
+
+    //starts the timer
+    function startTimer(){
+        interval = setInterval(function(){
+            timer.innerHTML = minute+"mins "+second+"secs";
+            second++;
+            if(second == 60){
+                minute++;
+                second=0;
+            }
+            if(minute == 60){
+                hour++;
+                minute = 0;
+            }
+        },1000);
+    }
+
+    //adds match class to the matched cards and removes the class open and show and resets the openedCards Array
+    function lockMatchedCards(){
+        openedCards.forEach(function(card) {
+            card.classList.remove('open', 'show');
+            card.classList.add('match');
+        });
+        openedCards = [];
+    }
+
+    //removes the class open and show from unmatched cards after a certain delay and resets the openedCards Array
+    function hideUnmatchedCards(){
+        //If the two cards doesnot match , both the cards disappears
+        setTimeout(function() {
+            openedCards.forEach(function(card) {
+              card.classList.remove('open', 'show');
+            });
+            openedCards = [];
+        },200);
+    }
+
+
+
+    //ends the game and displays the congratulations modal popup
+    function gameOver(){
+        if (matchedCardPair === 8){
+              //stop the timer
+              clearInterval(interval);
+             totalTime = timer.innerHTML;
+
+             noOfStars=stars.children.length;
+             //Pops up congratulations Modal and prints the message.
+             congPopUpModal.style.display="block";
+             modalMessage.textContent= "You have made "+movesCounter+" moves in "+totalTime+", and Your rating is "+noOfStars+" star(s)!";
+      }
+
+    }
+
+}
+const playAgain = document.querySelector(".play-again");
+const restart = document.querySelector(".restart");
   //resets the game from start
   restart.addEventListener("click",function(){
-    window.location.reload();
+    startGame();
   });
 
   //resets the game from start
   playAgain.addEventListener("click",function(){
-    window.location.reload();
+    congPopUpModal.style.display="none";
+    startGame();
   });

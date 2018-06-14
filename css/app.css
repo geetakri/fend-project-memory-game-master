@@ -180,6 +180,7 @@ responsive code
   }
 }
 
+
 @media screen and (min-width:426px) and (max-width: 799px){
   .deck {
       width: 420px;
@@ -190,6 +191,6 @@ responsive code
   }
   .deck .card {
       height: 80px;
-      width: 80px;    
+      width: 80px;
   }
 }
